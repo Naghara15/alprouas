@@ -1,0 +1,33 @@
+package routes
+
+import (
+	Controllers "alprouas/internal/controllers"
+
+	"github.com/gin-gonic/gin"
+)
+
+func Router(r *gin.Engine) {
+	// User
+	r.POST("/user", Controllers.CreateUserHandler)
+	r.GET("/user", Controllers.GetAllUserHandler)
+
+	// Login
+	r.POST("/login", Controllers.LoginHandler)
+
+	// Product
+	r.POST("/products", Controllers.GetProductsByTagHandler)
+	r.GET("/products", Controllers.GetAllProductsHandler)
+	r.POST("/recommend", Controllers.GetRecommendation)
+	
+
+	// Tag
+	r.GET("/tags", Controllers.GetAllTagsHandler)
+
+	// Cart
+	r.POST("/getcart", Controllers.GetCartUserHandler)
+	r.POST("/addcart", Controllers.AddCartHandler)
+	r.DELETE("/deletecart", Controllers.DeleteCartHandler)
+
+	// Transaction
+	r.POST("/buy", Controllers.BuyHandler)
+}
