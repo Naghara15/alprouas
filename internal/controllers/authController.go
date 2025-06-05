@@ -5,6 +5,7 @@ import (
 	"alprouas/internal/utilities"
 	"net/http"
 
+	"fmt"
 	"github.com/gin-gonic/gin"
 )
 
@@ -24,6 +25,8 @@ func LoginHandler(c *gin.Context) {
 	}
 
 	if utilities.VerifyHash(user.Password, DataUser.Password) {
+		// Set cookie buat user id
+		c.SetCookie("userid", fmt.Sprintf("%d", DataUser.Id), 3600, "/", "localhost", false, false)
 		c.IndentedJSON(http.StatusOK, DataUser.Id)
 	} else {
 		c.IndentedJSON(http.StatusUnauthorized, false)

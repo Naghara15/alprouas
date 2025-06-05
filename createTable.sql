@@ -4,6 +4,7 @@ CREATE TABLE users (
 	id SERIAL PRIMARY KEY,
 	username TEXT,
 	password VARCHAR,
+    email TEXT,
     created_at TIMESTAMP,
     updated_at TIMESTAMP
 );

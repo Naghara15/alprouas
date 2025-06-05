@@ -9,6 +9,7 @@ import (
 type Users struct {
 	Id         int       `json:"id" gorm:"PrimaryKey"`
 	Username   string    `json:"username"`
+	Email	   string	 `json:"email"`
 	Password   string    `json:"password"`
 	Created_at time.Time `gorm:"autoCreateTime"`
 	Updated_at time.Time `gorm:"autoUpdateTime"`
