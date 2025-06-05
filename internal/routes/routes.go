@@ -22,6 +22,7 @@ func Router(r *gin.Engine) {
 
 	// Tag
 	r.GET("/tags", Controllers.GetAllTagsHandler)
+	r.POST("/addclick", Controllers.AddClickHandler)
 
 	// Cart
 	r.POST("/getcart", Controllers.GetCartUserHandler)
