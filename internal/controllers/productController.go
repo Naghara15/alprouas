@@ -2,12 +2,10 @@ package Controllers
 
 import (
 	"alprouas/internal/models"
-	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
-
 
 func GetProductsByTagHandler(c *gin.Context) {
 	var relation []models.Product_tag
@@ -59,7 +57,6 @@ func GetRecommendation(c *gin.Context) {
 	tags := make([]int, len(user_tags))
 	for i, s := range user_tags {
 		tags[i] = s.Tag_id
-		fmt.Println(tags[i])
 	}
 
 	products, err := models.GetProductsByTag(tags)

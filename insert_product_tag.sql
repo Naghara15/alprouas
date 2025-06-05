@@ -36,7 +36,7 @@ VALUES
   ('Networking');
 
 
-INSERT INTO product_tag (product_id, tag_id)
+INSERT INTO product_tags (product_id, tag_id)
 VALUES
   (1, 1), (1, 2),
   (2, 1), (2, 3),
