@@ -27,7 +27,7 @@ func LoginHandler(c *gin.Context) {
 	if utilities.VerifyHash(user.Password, DataUser.Password) {
 		// Set cookie buat user id
 		c.SetCookie("userid", fmt.Sprintf("%d", DataUser.Id), 3600, "/", "localhost", false, false)
-		c.IndentedJSON(http.StatusOK, DataUser.Id)
+		c.IndentedJSON(http.StatusOK, true)
 	} else {
 		c.IndentedJSON(http.StatusUnauthorized, false)
 	}

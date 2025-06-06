@@ -5,6 +5,7 @@ CREATE TABLE users (
 	username TEXT,
 	password VARCHAR,
     email TEXT,
+    saldo DECIMAL,
     created_at TIMESTAMP,
     updated_at TIMESTAMP
 );

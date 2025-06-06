@@ -12,7 +12,7 @@ var user models.Users
 func CreateUserHandler(c *gin.Context) {
 	err := c.BindJSON(&user)
 	if err != nil {
-		c.IndentedJSON(http.StatusBadRequest, err)
+		c.IndentedJSON(http.StatusBadRequest, err.Error())
 		return
 	}
 
