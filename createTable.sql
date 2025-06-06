@@ -22,6 +22,8 @@ CREATE TABLE products (
     description TEXT,
     price DECIMAL,
     stock INT,
+    image TEXT,
+    rating DECIMAL,
     created_at TIMESTAMP,
     updated_at TIMESTAMP
 );
