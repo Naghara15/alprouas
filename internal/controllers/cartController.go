@@ -101,3 +101,20 @@ func UpdateCartQtyHandler(c *gin.Context) {
 
 	c.IndentedJSON(http.StatusOK, "OK")
 }
+
+func CalculateTotalHandler(c *gin.Context) {
+	var carts []models.Cart
+	err := c.BindJSON(&carts)
+	if err != nil {
+		c.IndentedJSON(http.StatusBadRequest, err.Error())
+		return
+	}
+
+	total, err := models.CalculateTotal(carts)
+	if err != nil {
+		c.IndentedJSON(http.StatusInternalServerError, err.Error())
+		return 
+	}
+
+	c.IndentedJSON(http.StatusOK, total)
+}

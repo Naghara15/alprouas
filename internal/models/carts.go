@@ -70,10 +70,33 @@ func GetCartsByID(carts []Cart) ([]Cart,error) {
 }
 
 func UpdateCartQty(cart Cart) (error) {
-	result := database.DB.Model(&cart).Update("qty", cart.Qty)
+	product, err := GetProductByID(cart.Product_id)
+	if err != nil {
+		return err
+	}
+
+	cart.Total_price = float64(cart.Qty) * product.Price
+	result := database.DB.Model(&cart).Updates(Cart{Qty: cart.Qty, Total_price: cart.Total_price})
 	if result.Error != nil {
 		return result.Error
 	}
 
 	return nil
+}
+
+func CalculateTotal(carts []Cart) (float64,error) {
+	var total float64
+	for _,s := range carts {
+		cart := Cart{
+			Id: s.Id,
+		}
+
+		result := database.DB.First(&cart)
+		if result.Error != nil {
+			return 0, result.Error
+		}
+		total += cart.Total_price
+	}
+
+	return total, nil
 }

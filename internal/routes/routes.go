@@ -28,7 +28,8 @@ func Router(r *gin.Engine) {
 	r.POST("/getcart", Controllers.GetCartUserHandler)
 	r.POST("/addcart", Controllers.AddCartHandler)
 	r.DELETE("/deletecart", Controllers.DeleteCartHandler)
-	r.POST("/updateqtycart", Controllers.UpdateCartQtyHandler)
+	r.PUT("/updateqtycart", Controllers.UpdateCartQtyHandler)
+	r.POST("/calculatetotal", Controllers.CalculateTotalHandler)
 
 	// Transaction
 	r.POST("/buy", Controllers.BuyHandler)
