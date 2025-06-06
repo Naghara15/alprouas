@@ -11,6 +11,7 @@ type Users struct {
 	Username   string    `json:"username"`
 	Email	   string	 `json:"email"`
 	Password   string    `json:"password"`
+	Saldo	   float64   `json:"saldo"`
 	Created_at time.Time `gorm:"autoCreateTime"`
 	Updated_at time.Time `gorm:"autoUpdateTime"`
 }
@@ -56,4 +57,12 @@ func GetuserByID(id int) (Users, error) {
 	}
 
 	return user, nil
+}
+
+func UpdateSaldo(user Users) (error) {
+	result := database.DB.Model(&user).Update("saldo",user.Saldo)
+	if result.Error != nil {
+		return result.Error
+	}
+	return nil
 }

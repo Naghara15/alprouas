@@ -32,9 +32,26 @@ func CreateUserHandler(c *gin.Context) {
 func GetAllUserHandler(c *gin.Context) {
 	users, err := models.GetAllUser()
 	if err != nil {
-		c.IndentedJSON(http.StatusInternalServerError, err)
+		c.IndentedJSON(http.StatusInternalServerError, err.Error())
 		return 
 	}
 
 	c.IndentedJSON(http.StatusOK, users)
+}
+
+func UpdateSaldoHandler(c *gin.Context) {
+	var user models.Users
+	err := c.BindJSON(&user)
+	if err != nil {
+		c.IndentedJSON(http.StatusBadRequest, err.Error())
+		return
+	}
+
+	err = models.UpdateSaldo(user)
+	if err != nil {
+		c.IndentedJSON(http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.IndentedJSON(http.StatusOK, "saldo updated")
 }

@@ -10,6 +10,7 @@ func Router(r *gin.Engine) {
 	// User
 	r.POST("/user", Controllers.CreateUserHandler)
 	r.GET("/user", Controllers.GetAllUserHandler)
+	r.PUT("/updatesaldo", Controllers.UpdateSaldoHandler)
 
 	// Login
 	r.POST("/login", Controllers.LoginHandler)
