@@ -18,7 +18,7 @@ func Router(r *gin.Engine) {
 	r.POST("/products", Controllers.GetProductsByTagHandler)
 	r.GET("/products", Controllers.GetAllProductsHandler)
 	r.POST("/recommend", Controllers.GetRecommendation)
-	
+	r.POST("/searchproduct", Controllers.SearchProductsHandler)
 
 	// Tag
 	r.GET("/tags", Controllers.GetAllTagsHandler)

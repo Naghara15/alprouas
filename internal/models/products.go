@@ -17,6 +17,16 @@ type Product struct {
 	Updated_at  time.Time `gorm:"autoUpdateTime"`
 }
 
+func SearchProducts(name string) ([]Product, error) {
+	var products []Product
+	result := database.DB.Where("name LIKE ?", "%"+name+"%").Find(&products)
+	if result.Error != nil {
+		return []Product{}, result.Error
+	}
+
+	return products, nil
+}
+
 func GetAllProducts() ([]Product, error) {
 	var products []Product
 	result := database.DB.Find(&products)

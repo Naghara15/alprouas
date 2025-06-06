@@ -7,6 +7,23 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+func SearchProductsHandler(c *gin.Context) {
+	var product models.Product
+	err := c.BindJSON(&product)
+	if err != nil {
+		c.IndentedJSON(http.StatusBadRequest, err.Error())
+		return
+	}
+
+	products, err := models.SearchProducts(product.Name)
+	if err != nil {
+		c.IndentedJSON(http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.IndentedJSON(http.StatusOK, products)
+}
+
 func GetProductsByTagHandler(c *gin.Context) {
 	var relation []models.Product_tag
 
