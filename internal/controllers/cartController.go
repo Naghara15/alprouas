@@ -84,3 +84,20 @@ func DeleteCartHandler(c *gin.Context) {
 
 	c.IndentedJSON(http.StatusOK, carts)
 }
+
+func UpdateCartQtyHandler(c *gin.Context) {
+	var cart models.Cart
+	err := c.BindJSON(&cart)
+	if err != nil {
+		c.IndentedJSON(http.StatusBadRequest, err.Error())
+		return
+	}
+
+	err = models.UpdateCartQty(cart)
+	if err != nil{
+		c.IndentedJSON(http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.IndentedJSON(http.StatusOK, "OK")
+}

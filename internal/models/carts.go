@@ -68,3 +68,12 @@ func GetCartsByID(carts []Cart) ([]Cart,error) {
 
 	return carts, nil
 }
+
+func UpdateCartQty(cart Cart) (error) {
+	result := database.DB.Model(&cart).Update("qty", cart.Qty)
+	if result.Error != nil {
+		return result.Error
+	}
+
+	return nil
+}
