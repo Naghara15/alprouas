@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <title>Saldo - Bebras Pay</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background-color: #f9f9f9;
+      text-align: center;
+      padding: 50px;
+    }
+
+    .saldo-container {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      display: inline-block;
+    }
+
+    .saldo-container h1 {
+      margin-bottom: 10px;
+    }
+
+    .saldo {
+      font-size: 28px;
+      font-weight: bold;
+      color: #2ecc71;
+    }
+  </style>
+</head>
+<body>
+  <div class="saldo-container">
+    <h1>Saldo Bebras Pay</h1>
+    <div class="saldo" id="saldo">Rp0</div>
+  </div>
+
+  <script>
+    // Fungsi untuk ambil saldo dari cookie
+  function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(";").shift();
+    return null;
+  }
+
+  // Ambil saldo dari cookie
+  const saldoStr = getCookie("saldo") || "50000000";
+  const saldo = parseInt(saldoStr);
+  const saldoElement = document.getElementById('saldo');
+  saldoElement.textContent = 'Rp' + saldo.toLocaleString('id-ID');
+
+  </script>
+</body>
+</html>

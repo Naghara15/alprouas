@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Checkout - Bebras Store</title>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      background-color: #f5f5f5;
+    }
+
+    .container {
+      display: flex;
+      gap: 20px;
+      padding: 30px;
+    }
+
+    .left, .right {
+      background: white;
+      border-radius: 8px;
+      padding: 20px;
+    }
+
+    .left {
+      flex: 2;
+    }
+
+    .right {
+      flex: 1;
+      height: fit-content;
+    }
+
+    h2, h3 {
+      margin-top: 0;
+    }
+
+    .product-box {
+      border: 1px solid #ddd;
+      padding: 15px;
+      border-radius: 6px;
+      display: flex;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .product-box img {
+      width: 80px;
+      height: 80px;
+      object-fit: cover;
+      border-radius: 6px;
+    }
+
+    .product-info {
+      flex-grow: 1;
+    }
+
+    .summary {
+      font-size: 1rem;
+      margin-top: 20px;
+    }
+
+    .summary strong {
+      font-size: 1.2rem;
+    }
+
+    .pay-button {
+      background-color: #2ecc71;
+      color: white;
+      border: none;
+      padding: 15px;
+      font-size: 16px;
+      width: 100%;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 15px;
+    }
+
+    .pay-button:hover {
+      background-color: #27ae60;
+    }
+
+    .bebras-pay {
+      border: 1px solid #ddd;
+      padding: 10px;
+      border-radius: 6px;
+      background-color: #ecfdf5;
+      margin-top: 10px;
+    }
+
+    .bebras-pay label {
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="left">
+      <h2>Checkout</h2>
+      <div id="product-list">
+        <!-- Produk akan dimuat lewat JavaScript -->
+      </div>
+    </div>
+
+    <div class="right">
+      <h3>Metode Pembayaran</h3>
+      <div class="bebras-pay">
+        <label><input type="radio" checked> Bebras Pay (Saldo: <span id="saldo">Rp50.000</span>)</label>
+      </div>
+
+      <div class="summary">
+        Total Tagihan: <br><strong id="total">Rp0</strong>
+      </div>
+
+      <button class="pay-button" onclick="bayarSekarang()">Bayar Sekarang</button>
+    </div>
+  </div>
+
+  <script>
+    // Ambil item dari checkoutItems yang dipilih
+    const checkoutItems = JSON.parse(localStorage.getItem('checkoutItems')) || [];
+    const productList = document.getElementById("product-list");
+    const totalTagihan = document.getElementById("total");
+
+    let total = 0;
+
+    checkoutItems.forEach(item => {
+      const quantity = item.quantity ?? 1;
+      const div = document.createElement("div");
+      div.className = "product-box";
+      div.innerHTML = `
+        <img src="${item.image}" alt="${item.name}">
+        <div class="product-info">
+          <div><strong>${item.name}</strong></div>
+          <div>${quantity} x Rp${item.price.toLocaleString('id-ID')}</div>
+        </div>
+        <div><strong>Rp${(item.price * quantity).toLocaleString('id-ID')}</strong></div>
+      `;
+      productList.appendChild(div);
+
+      total += item.price * quantity;
+    });
+
+    totalTagihan.textContent = "Rp" + total.toLocaleString("id-ID");
+
+
+    
+    async function bayarSekarang() {
+  const saldoStr = getCookie("saldo");
+  let saldo = parseInt(saldoStr || "50000000");
+  if (isNaN(saldo)) saldo = 50000000;
+
+  const total = checkoutItems.reduce((sum, item) => sum + item.price * (item.quantity || 1), 0);
+
+  if (total > saldo) {
+    alert("Saldo Bebras Pay tidak mencukupi.");
+    return;
+  }
+
+  const sisaSaldo = saldo - total;
+
+  // Kirim array ID saja ke backend
+  const itemIds = checkoutItems.map(item => ({ id: item.id }));
+
+  try {
+    const response = await fetch("http://localhost:8080/buy", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(itemIds) // hanya kirim [{id: 13}, {id: 14}]
+    });
+
+    if (!response.ok) {
+      throw new Error("Transaksi gagal dari server.");
+    }
+
+    // Update saldo di cookie
+    document.cookie = `saldo=${sisaSaldo}; path=/; max-age=86400`;
+
+    alert("Pembayaran berhasil! Terima kasih sudah belanja di Bebras Store 😊");
+    window.location.href = "saldo.html";
+
+  } catch (error) {
+    console.error("Gagal proses pembayaran:", error);
+    alert("Terjadi kesalahan saat pembayaran.");
+  }
+}
+
+
+function getCookie(name) {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop().split(";").shift();
+  return null;
+}
+
+function loadCheckoutData() {
+  const items = JSON.parse(localStorage.getItem("checkoutItems") || "[]");
+  checkoutItems = items;
+  tampilkanProduk(items);
+}
+
+    // Tampilkan saldo saat ini
+    const saldoStr = getCookie("saldo") || "50000000";
+    document.getElementById("saldo").textContent = "Rp" + parseInt(saldoStr).toLocaleString("id-ID");
+
+  </script>
+</body>
+</html>

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sign Up - Bebras Store</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    body, html {
+      height: 100%;
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: #f5f7fa;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .container {
+      background: white;
+      padding: 40px 30px;
+      border-radius: 12px;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 400px;
+      box-sizing: border-box;
+    }
+    h2 {
+      font-weight: 600;
+      font-size: 2rem;
+      margin-bottom: 25px;
+      color: #2c3e50;
+      text-align: center;
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    input[type="text"],
+    input[type="email"],
+    input[type="password"] {
+      padding: 15px 20px;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      outline: none;
+      transition: border-color 0.3s ease;
+    }
+    input[type="text"]:focus,
+    input[type="email"]:focus,
+    input[type="password"]:focus {
+      border-color: #27ae60;
+      box-shadow: 0 0 8px rgba(39, 174, 96, 0.3);
+    }
+    .btn {
+      background: #27ae60;
+      color: white;
+      padding: 15px 0;
+      font-weight: 600;
+      font-size: 1.1rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      box-shadow: 0 4px 10px rgba(39, 174, 96, 0.4);
+    }
+    .btn:hover {
+      background: #219150;
+      box-shadow: 0 6px 14px rgba(33, 145, 80, 0.6);
+    }
+    .switch-text {
+      margin-top: 20px;
+      font-size: 0.95rem;
+      color: #666;
+      text-align: center;
+    }
+    .switch-text a {
+      color: #27ae60;
+      cursor: pointer;
+      font-weight: 600;
+      text-decoration: none;
+    }
+    .switch-text a:hover {
+      text-decoration: underline;
+    }
+    .language-toggle {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 25px;
+      gap: 20px;
+    }
+    .language-toggle button {
+      background: none;
+      border: none;
+      color: #27ae60;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 1rem;
+      padding: 0;
+    }
+    .language-toggle button.active {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2 id="title">Daftar Akun</h2>
+    <form id="signup-form">
+      <input type="text" id="signup-username" placeholder="Nama Pengguna" required/>
+      <input type="email" id="signup-email" placeholder="Email" required />
+      <input type="password" id="signup-password" placeholder="Kata Sandi" oninput="confirmPassword.pattern = this.value" required />
+      <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Ulangi Kata Sandi" title="Password harus sama" required />
+      <button type="submit" class="btn" id="signup-btn">Daftar</button>
+    </form>
+    <p class="switch-text" id="switch-text">
+      Sudah punya akun? <a href="login.html" id="login-link">Masuk</a>
+    </p>
+  </div>
+
+  <script>
+    const signupUsername = document.getElementById("signup-username");
+    const signupEmail = document.getElementById("signup-email")
+    const signupPassword = document.getElementById("signup-password");
+    const signupBtn = document.getElementById("signup-btn");
+    const loginLink = document.getElementById("login-link");
+
+    function saveUser(username, password) {
+      let users = JSON.parse(localStorage.getItem("users")) || {};
+      users[username] = password;
+      localStorage.setItem("users", JSON.stringify(users));
+    }
+
+    const signupForm = document.getElementById("signup-form");
+    signupForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const username = signupUsername.value.trim();
+      const email = signupEmail.value.trim()
+      const password = signupPassword.value.trim();
+
+      try{
+        const response = await fetch("http://localhost:8080/user", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          credentials: "include",
+          body: JSON.stringify({username, email, password})
+        });
+
+        if (response.error) {
+        const errorData = await response.json();
+        throw new Error(errorData);
+        }
+
+        window.location.href = "login.html"
+      } catch (error) {
+        alert(error)
+      }
+    });
+
+    // Redirect to home if already logged in
+    window.addEventListener("load", () => {
+      const userid = document.cookie.split(";").find(item => item.trimStart().startsWith("userid")).split("=")[1];
+      console.log(userid)
+      if (userid) {
+        window.location.href = "home.html";
+      }
+    });
+  </script>
+</body>
+</html>
