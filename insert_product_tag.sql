@@ -12,10 +12,10 @@ VALUES
 
 INSERT INTO tags (name)
 VALUES
-('electronics'),
-('fashion'),
-('home'),
-('books');
+('Electronics'),
+('Fashion'),
+('Home'),
+('Books');
 
 
 INSERT INTO product_tags (product_id, tag_id) VALUES
