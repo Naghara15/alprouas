@@ -7,6 +7,16 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type cartResponse struct {
+	Id		int		`json:"id"`
+	Product_id	int	`json:"product_id"`
+	Image 	string	`json:"image"`
+	Name 	string	`json:"name"`
+	Stock 	int		`json:"stock"`
+	Qty		int		`json:"qty"`
+	Price 	float64	`json:"price"`
+}
+
 func GetCartUserHandler(c *gin.Context) {
 	var cart models.Cart
 
@@ -20,7 +30,25 @@ func GetCartUserHandler(c *gin.Context) {
 	if err != nil {
 		c.IndentedJSON(http.StatusInternalServerError, err)
 	}
-	c.IndentedJSON(http.StatusOK, carts)
+
+	response := make([]cartResponse, len(carts))
+	for i, cart := range carts {
+		product, err := models.GetProductByID(cart.Product_id)
+		if err != nil {
+			c.IndentedJSON(http.StatusInternalServerError, err.Error())
+			return
+		}
+
+		response[i].Id = cart.Id
+		response[i].Product_id = cart.Product_id
+		response[i].Image = product.Image
+		response[i].Name = product.Name
+		response[i].Stock = product.Stock
+		response[i].Qty = cart.Qty
+		response[i].Price = cart.Total_price
+	}
+
+	c.IndentedJSON(http.StatusOK, response)
 }
 
 func AddCartHandler(c *gin.Context) {
@@ -117,4 +145,21 @@ func CalculateTotalHandler(c *gin.Context) {
 	}
 
 	c.IndentedJSON(http.StatusOK, total)
+}
+
+func NotificationCartHandler(c *gin.Context) {
+	var cart models.Cart
+	err := c.BindJSON(&cart)
+	if err != nil {
+		c.IndentedJSON(http.StatusBadRequest, err.Error())
+		return
+	}
+
+	carts, err := models.GetCartUser(cart.User_id)
+	if err != nil {
+		c.IndentedJSON(http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.IndentedJSON(http.StatusOK, len(carts))
 }

@@ -27,7 +27,7 @@ func AddCart(cart Cart) error {
 
 func GetCartUser(userID int) ([]Cart, error) {
 	var carts []Cart
-	result := database.DB.Where("user_id = ? AND transaction_id IS NULL", userID).Find(&carts)
+	result := database.DB.Where("user_id = ? AND transaction_id IS NULL", userID).Order("id").Find(&carts)
 	if result.Error != nil {
 		return []Cart{}, result.Error
 	}
