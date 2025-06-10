@@ -2,6 +2,7 @@ package Controllers
 
 import (
 	"alprouas/internal/models"
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -22,10 +23,10 @@ func BuyHandler(c *gin.Context) {
 	}
 
 	var total float64
-	for _,s := range carts{
-		avail,err := CheckStock(s.Product_id)
+	for _, s := range carts {
+		avail, err := CheckStock(s.Product_id)
 		if err != nil {
-			c.IndentedJSON(http.StatusInternalServerError,err.Error())
+			c.IndentedJSON(http.StatusInternalServerError, err.Error())
 			return
 		}
 		if !avail {
@@ -59,6 +60,8 @@ func BuyHandler(c *gin.Context) {
 		return
 	}
 
+	c.SetCookie("totalbayar", fmt.Sprintf("%.2f", total), 3600, "/", "localhost", false, false)
+	c.SetCookie("saldo", fmt.Sprintf("%.2f", user.Saldo), 3600, "/", "localhost", false, false)
 
 	c.IndentedJSON(http.StatusOK, "transaction complete")
 }

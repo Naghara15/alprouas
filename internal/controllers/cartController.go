@@ -15,6 +15,7 @@ type cartResponse struct {
 	Stock 	int		`json:"stock"`
 	Qty		int		`json:"qty"`
 	Price 	float64	`json:"price"`
+	OriPrice float64 `json:"oriprice"`
 }
 
 func GetCartUserHandler(c *gin.Context) {
@@ -46,6 +47,7 @@ func GetCartUserHandler(c *gin.Context) {
 		response[i].Stock = product.Stock
 		response[i].Qty = cart.Qty
 		response[i].Price = cart.Total_price
+		response[i].OriPrice = product.Price
 	}
 
 	c.IndentedJSON(http.StatusOK, response)

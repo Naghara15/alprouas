@@ -71,13 +71,24 @@
       <path class="checkmark-check" fill="none" d="M14 27l7 7 16-16" />
     </svg>
     <h1>Pembayaran Berhasil</h1>
-    <p class="total">Total Bayar: Rp 50.000.000</p>
+    <p id='saldo-user' class="total"></p>
   </div>
   <script>
+    window.addEventListener("load", () => {
+    document.getElementById("saldo-user").textContent = "Total Bayar: " + 'Rp ' + getCookie('totalbayar').toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  });
+
     // Add click event to entire body to redirect to home page
     document.body.addEventListener('click', () => {
       window.location.href = 'home.html';
     });
+
+  function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(";").shift();
+    return null;
+  }
   </script>
 </body>
 </html>

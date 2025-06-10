@@ -35,7 +35,7 @@ func AddCart(cart Cart) error {
 		return err
 	}
 
-	cartExist.Total_price += product.Price
+	cartExist.Total_price += product.Price * float64(cart.Qty)
 	cartExist.Qty += cart.Qty
 	result := database.DB.Model(&cartExist).Updates(Cart{Qty: cartExist.Qty, Total_price: cartExist.Total_price})
 	if result.Error != nil {

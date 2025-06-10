@@ -125,27 +125,27 @@
     let total = 0;
 
     checkoutItems.forEach(item => {
-      const quantity = item.quantity ?? 1;
+      const quantity = item.qty ?? 1;
       const div = document.createElement("div");
       div.className = "product-box";
       div.innerHTML = `
         <img src="${item.image}" alt="${item.name}">
         <div class="product-info">
           <div><strong>${item.name}</strong></div>
-          <div>${quantity} x Rp${item.price.toLocaleString('id-ID')}</div>
+          <div>${quantity} x Rp${item.oriprice.toLocaleString('id-ID')}</div>
         </div>
-        <div><strong>Rp${(item.price * quantity).toLocaleString('id-ID')}</strong></div>
+        <div><strong>Rp${(item.price).toLocaleString('id-ID')}</strong></div>
       `;
       productList.appendChild(div);
 
-      total += item.price * quantity;
+      total += item.price;
     });
 
     totalTagihan.textContent = "Rp" + total.toLocaleString("id-ID");
 
 
     
-    async function bayarSekarang() {
+async function bayarSekarang() {
   const saldoStr = getCookie("saldo");
   let saldo = parseInt(saldoStr || "50000000");
   if (isNaN(saldo)) saldo = 50000000;
@@ -168,18 +168,16 @@
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify(itemIds) // hanya kirim [{id: 13}, {id: 14}]
+      credentials: "include",
+      body: JSON.stringify(itemIds) 
     });
 
     if (!response.ok) {
       throw new Error("Transaksi gagal dari server.");
     }
 
-    // Update saldo di cookie
-    document.cookie = `saldo=${sisaSaldo}; path=/; max-age=86400`;
-
     alert("Pembayaran berhasil! Terima kasih sudah belanja di Bebras Store 😊");
-    window.location.href = "saldo.html";
+    window.location.href = "selesai.html";
 
   } catch (error) {
     console.error("Gagal proses pembayaran:", error);
