@@ -112,9 +112,9 @@
 </head>
 <body>
   <div class="top-header">
-    <div class="top-nav" style="padding: 0 40px; align-items: center; height: 40px;">
-      <div class="left-links" style="display: flex; align-items: center; gap: 10px;">
-        <h1 class="marketplace-title" style="color: white; margin: 0; font-size: 1.2rem; font-weight: 700;">Bebras Store</h1>
+    <div class="top-nav" style="padding: 0 40px; align-items: center; height: 60px;">
+      <div class="left-links" style="display: flex; align-items: center; gap: 20px;">
+        <h1 class="marketplace-title" style="color: white; margin: 0; font-size: 1.8rem; font-weight: 700;">Bebras Store</h1>
       </div>
       <div class="search-bar" style="flex-grow: 1; margin: 0 20px;">
         <form id="top-search-form" onsubmit="return false;" style="display: flex;">
@@ -127,6 +127,7 @@
       </div>
       <div class="right-links" style="display: flex; align-items: center; gap: 20px;">
         <span id="user-info" style="font-weight: 400;"></span>
+        <p id='name-user' style="font-weight: 700; color: white; text-decoration: none;"></p>
         <p id='saldo-user' style="font-weight: 700; color: white; text-decoration: none;"></p>
         <a href="cart.html" id="cart-link" style="color: white; text-decoration: none; position: relative;">
           <img src="img/cart.png" alt="Cart" style="height: 24px; vertical-align: middle;" />
@@ -143,8 +144,8 @@
         <div class="slides" id="slides">
           <div class="slide">
             <div class="slide-content">
-              <p>Best Deal Online on smart watches</p>
-              <h2>SMART WEARABLE.</h2>
+              <p>Best Deal Online on Gamepad</p>
+              <h2>Gamepad</h2>
               <p class="discount">UP TO 80% OFF</p>
             </div>
             <img src="img/gamepad.png" alt="Smart Watch" />
@@ -307,6 +308,7 @@ function getCookie(name) {
 
 function renderCategory() {
   const categoryMenu = document.querySelector(".category-menu");
+  document.getElementById("name-user").textContent = 'Halo ' + getCookie('name') + '!';
   document.getElementById("saldo-user").textContent = 'Rp ' + getCookie('saldo').toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
   fetch("http://localhost:8080/tags")
     .then((response) => {
@@ -404,23 +406,6 @@ async function loadProductsByCategory(categoryId) {
     alert("Gagal memuat rekomendasi: " + err.message);
   }
 }
-
-
-// categoryButtons.forEach(btn => {
-//   btn.addEventListener("click", () => {
-//     categoryButtons.forEach(b => b.classList.remove("active"));
-//     btn.classList.add("active");
-
-//     const category = btn.dataset.category;
-//     if (category === "get-recommendation") {
-//       getRecommendations();
-//     } else if (category === "all") {
-//       renderProductsAll();
-//     } else {
-
-//     }
-//   });
-// });
 
   async function renderProductsAll() {
   productList.innerHTML = "";

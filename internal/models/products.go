@@ -13,6 +13,7 @@ type Product struct {
 	Stock       int       `json:"stock"`
 	Image		string	  `json:"image"`
 	Rating		float64	  `json:"rating"`
+	Sold		int		  `json:"sold"`
 	Created_at  time.Time `gorm:"autoCreateTime"`
 	Updated_at  time.Time `gorm:"autoUpdateTime"`
 }

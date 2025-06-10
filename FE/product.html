@@ -22,7 +22,8 @@
               🔍
             </button>
         </div>
-        <div class="right-links" style="display: flex; align-items: center; gap: 20px;">          
+        <div class="right-links" style="display: flex; align-items: center; gap: 20px;">
+          <p id="nama-user" style="font-weight: 700; color: white; text-decoration: none;"></p>
           <p id="saldo-user" style="font-weight: 700; color: white; text-decoration: none;"></p>
           <a href="cart.html" id="cart-link" style="color: white; text-decoration: none; position: relative;">
             <img src="img/cart.png" alt="Cart" style="height: 24px; vertical-align: middle;" />
@@ -188,9 +189,6 @@
         <div class="rating" id="product-rating"></div>
         <div class="price" id="product-price"></div>
         <div class="detail-section">
-          <div><strong>Kondisi: </strong> <span id="product-condition"></span></div>
-          <div><strong>Min. Pemesanan: </strong> <span id="product-min-order"></span></div>
-          <div><strong>Etalase: </strong> <span id="product-etalase"></span></div>
           <div><strong>Deskripsi: </strong><span id="product-deskripsi"></span></div>
         </div>
         <div class="description" id="product-description"></div>
@@ -248,11 +246,12 @@
     }
 
     function renderProductDetails(product) {
+      document.getElementById("nama-user").textContent = "Halo " + getCookie('name') + '!';
       document.getElementById("saldo-user").textContent = 'Rp ' + getCookie('saldo').toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
       document.getElementById("product-name").textContent = product.name;
       document.getElementById("product-price").textContent = "Rp " + formatPrice(parseInt(product.price));
-      // document.getElementById("product-sold").textContent = "Terjual " + product.sold + "+";
-      // document.getElementById("product-rating").textContent = "⭐ " + product.rating + " (" + product.ratingCount + " rating)";
+      document.getElementById("product-sold").textContent = "Terjual " + product.sold + "+";
+      document.getElementById("product-rating").textContent = "⭐ " + product.rating;
       // document.getElementById("product-condition").textContent = product.condition;
       // document.getElementById("product-min-order").textContent = product.minOrder;
       // document.getElementById("product-etalase").textContent = product.etalase;

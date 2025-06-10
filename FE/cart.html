@@ -178,7 +178,7 @@
         Beranda
       </a>
       <a href="cart.html" id="cart-link">
-        <img src="cart.png" alt="Cart" />
+        <img src="img/cart.png" alt="Cart" />
         <span class="cart-badge" id="cart-count">0</span>
       </a>
     </div>
@@ -316,7 +316,7 @@ async function renderCart() {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(cart)
+        body: JSON.stringify(selectedItems)
       });
 
       if (!response.ok) throw new Error('Gagal mengirim cart');

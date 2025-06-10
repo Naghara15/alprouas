@@ -105,7 +105,7 @@
     <div class="right">
       <h3>Metode Pembayaran</h3>
       <div class="bebras-pay">
-        <label><input type="radio" checked> Bebras Pay (Saldo: <span id="saldo">Rp50.000</span>)</label>
+        <label><input type="radio" checked> Bebras Pay (Saldo: <span id="saldo-user"></span>)</label>
       </div>
 
       <div class="summary">
@@ -201,10 +201,14 @@ function loadCheckoutData() {
   tampilkanProduk(items);
 }
 
-    // Tampilkan saldo saat ini
-    const saldoStr = getCookie("saldo") || "50000000";
-    document.getElementById("saldo").textContent = "Rp" + parseInt(saldoStr).toLocaleString("id-ID");
-
+window.addEventListener("load", () => {
+  const currentUser = getCookie("userid");
+  if (!currentUser) {
+    window.location.href = "login.html";
+  } else {
+    document.getElementById("saldo-user").textContent = 'Rp ' + getCookie('saldo').toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  }
+});
   </script>
 </body>
 </html>
