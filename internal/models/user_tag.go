@@ -15,7 +15,7 @@ type User_tag struct {
 
 func GetUserMostClicked(userID int) ([]User_tag, error) {
 	var user_tags []User_tag
-	result := database.DB.Order("clicked DESC").Limit(3).Find(&user_tags)
+	result := database.DB.Order("clicked DESC").Limit(2).Find(&user_tags)
 	if result.Error != nil {
 		return []User_tag{}, nil
 	}

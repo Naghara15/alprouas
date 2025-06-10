@@ -127,10 +127,9 @@
       </div>
       <div class="right-links" style="display: flex; align-items: center; gap: 20px;">
         <span id="user-info" style="font-weight: 400;"></span>
-        <a href="signup.html" style="font-weight: 700; color: white; text-decoration: none;"></a>
-        <a href="login.html" style="font-weight: 700; color: white; text-decoration: none;">Rp 50.000.000</a>
+        <p id='saldo-user' style="font-weight: 700; color: white; text-decoration: none;"></p>
         <a href="cart.html" id="cart-link" style="color: white; text-decoration: none; position: relative;">
-          <img src="cart.png" alt="Cart" style="height: 24px; vertical-align: middle;" />
+          <img src="img/cart.png" alt="Cart" style="height: 24px; vertical-align: middle;" />
           <span id="cart-count" style="position: absolute; top: -8px; right: -8px; background: red; color: white; font-size: 12px; border-radius: 50%; padding: 2px 6px;">0</span>
         </a>
         <button id="logout-btn" class="btn logout-btn">Logout</button>
@@ -148,7 +147,7 @@
               <h2>SMART WEARABLE.</h2>
               <p class="discount">UP TO 80% OFF</p>
             </div>
-            <img src="gamepad.png" alt="Smart Watch" />
+            <img src="img/gamepad.png" alt="Smart Watch" />
           </div>
           <div class="slide">
             <div class="slide-content">
@@ -156,7 +155,7 @@
               <h2>POWERFUL PERFORMANCE.</h2>
               <p class="discount">SAVE UP TO 40%</p>
             </div>
-            <img src="laptop2.png" alt="Laptop" />
+            <img src="img/laptop2.png" alt="Laptop" />
           </div>
           <div class="slide">
             <div class="slide-content">
@@ -164,7 +163,7 @@
               <h2>STYLISH CLOTHING.</h2>
               <p class="discount">UP TO 50% OFF</p>
             </div>
-            <img src="baju.jpg" alt="Fashion" />
+            <img src="img/baju.jpg" alt="Fashion" />
           </div>
         </div>
         <div class="slider-nav">
@@ -239,18 +238,6 @@
     // Initialize slider
     updateSliderPosition();
 
-    // Existing product and other scripts
-    const products = [
-    { id: 1, name: "ROG phone 8 pro, 24GB, 1TB", category: "electronics", price: 13899000, image: "ROG.png" },
-    { id: 2, name: "Laptop", category: "electronics", price: 20000000, image: "laptop2.png" },
-    { id: 3, name: "T-Shirt", category: "fashion", price: 135000, image: "baju.jpg" },
-    { id: 4, name: "Jeans", category: "fashion", price: 120000, image: "celana.jpg" },
-    { id: 5, name: "Gamepad", category: "electronics", price: 250000, image: "gamepad.png" },
-    { id: 6, name: "Bookshelf", category: "home", price: 120000, image: "rak.webp" },
-    { id: 7, name: "Paket Novel Tere Liye", category: "books", price: 480000, image: "tereliye.jpg" },
-    { id: 8, name: "Sepatu Arei Montreal", category: "fashion", price: 789000, image: "sepatu.webp" }
-    ];
-
   const productList = document.getElementById("product-list");
   const categoryButtons = document.querySelectorAll(".category-btn");
   const logoutBtn = document.getElementById("logout-btn");
@@ -293,7 +280,7 @@ function getCookie(name) {
     const productCard = document.createElement("div");
     productCard.className = "product-card";
     productCard.innerHTML = `
-      <a href="product.html?id=${product.id}" class="product-link">
+      <a href="product.html?id=${product.id}" class="product-link" onclick=addCounter(${product.id})>
         <img src="${product.image}" alt="${product.name}" />
         <h3>${product.name}</h3>
       </a>
@@ -320,6 +307,7 @@ function getCookie(name) {
 
 function renderCategory() {
   const categoryMenu = document.querySelector(".category-menu");
+  document.getElementById("saldo-user").textContent = 'Rp ' + getCookie('saldo').toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
   fetch("http://localhost:8080/tags")
     .then((response) => {
       if (!response.ok) {
@@ -400,7 +388,7 @@ async function loadProductsByCategory(categoryId) {
     const productCard = document.createElement("div");
     productCard.className = "product-card";
     productCard.innerHTML = `
-      <a href="product.html?id=${product.id}" class="product-link">
+      <a href="product.html?id=${product.id}" class="product-link" onclick=addCounter(${product.id})>
         <img src="${product.image}" alt="${product.name}" />
         <h3>${product.name}</h3>
       </a>
@@ -443,7 +431,7 @@ async function loadProductsByCategory(categoryId) {
     const productCard = document.createElement("div");
     productCard.className = "product-card";
     productCard.innerHTML = `
-      <a href="product.html?id=${product.id}" class="product-link">
+      <a href="product.html?id=${product.id}" class="product-link" onclick=addCounter(${product.id})>
         <img src="${product.image}" alt="${product.name}" />
         <h3>${product.name}</h3>
       </a>
@@ -541,7 +529,7 @@ async function updateCartBadge() {
   // });
 
   logoutBtn.addEventListener("click", () => {
-    localStorage.removeItem("currentUser");
+    document.cookie = "userid=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT";
     window.location.href = "login.html";
   });
 
@@ -555,6 +543,25 @@ async function updateCartBadge() {
       updateCartBadge(); // supaya saat buka halaman, badge cart langsung update
     }
   });
+
+  async function addCounter(productID) {
+    const user_id = getCookie('userid')
+    try {
+      const response = await fetch('http://localhost:8080/addclick', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          user_id: parseInt(user_id),
+          product_id: productID
+        })
+      });
+    } catch (error) {
+      console.error('Error:', error);
+      // Tampilkan error ke user jika perlu
+    }
+  }
   </script>
 </body>
 </html>

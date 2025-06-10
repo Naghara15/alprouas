@@ -3,6 +3,7 @@ package Controllers
 import (
 	"alprouas/internal/models"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -94,4 +95,20 @@ func CheckStock(id int) (bool, error) {
 		return false, nil
 	}
 	return true, nil
+}
+
+func GetProductIDHandler(c *gin.Context) {
+	productId, err := strconv.Atoi(c.Query("id"))
+	if err != nil {
+		c.IndentedJSON(http.StatusBadRequest, err.Error())
+		return
+	}
+
+	product, err := models.GetProductByID(productId)
+	if err != nil {
+		c.IndentedJSON(http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.IndentedJSON(http.StatusOK, product)
 }

@@ -21,7 +21,7 @@ type Cart struct {
 
 func AddCart(cart Cart) error {
 	var cartExist Cart
-	err := database.DB.Where("user_id = ? AND product_id = ?", cart.User_id, cart.Product_id).First(&cartExist).Error
+	err := database.DB.Where("user_id = ? AND product_id = ? AND transaction_id IS NULL", cart.User_id, cart.Product_id).First(&cartExist).Error
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		result := database.DB.Create(&cart)
 		if result.Error != nil {
@@ -36,13 +36,13 @@ func AddCart(cart Cart) error {
 	}
 
 	cartExist.Total_price += product.Price
-	cartExist.Qty++
+	cartExist.Qty += cart.Qty
 	result := database.DB.Model(&cartExist).Updates(Cart{Qty: cartExist.Qty, Total_price: cartExist.Total_price})
 	if result.Error != nil {
 		return result.Error
 	}
 	return nil
-	
+
 }
 
 func GetCartUser(userID int) ([]Cart, error) {

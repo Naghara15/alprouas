@@ -22,11 +22,10 @@
               🔍
             </button>
         </div>
-        <div class="right-links" style="display: flex; align-items: center; gap: 20px;">
-          <a href="signup.html" style="font-weight: 700; color: white; text-decoration: none;"></a>
-          <a href="login.html" style="font-weight: 700; color: white; text-decoration: none;">Rp 50.000.000</a>
+        <div class="right-links" style="display: flex; align-items: center; gap: 20px;">          
+          <p id="saldo-user" style="font-weight: 700; color: white; text-decoration: none;"></p>
           <a href="cart.html" id="cart-link" style="color: white; text-decoration: none; position: relative;">
-            <img src="cart.png" alt="Cart" style="height: 24px; vertical-align: middle;" />
+            <img src="img/cart.png" alt="Cart" style="height: 24px; vertical-align: middle;" />
             <span id="cart-count" style="position: absolute; top: -8px; right: -8px; background: red; color: white; font-size: 12px; border-radius: 50%; padding: 2px 6px;">0</span>
           </a>
           <button id="logout-btn" class="btn logout-btn">Logout</button>
@@ -189,9 +188,10 @@
         <div class="rating" id="product-rating"></div>
         <div class="price" id="product-price"></div>
         <div class="detail-section">
-          <div><strong>Kondisi:</strong> <span id="product-condition"></span></div>
-          <div><strong>Min. Pemesanan:</strong> <span id="product-min-order"></span></div>
-          <div><strong>Etalase:</strong> <span id="product-etalase"></span></div>
+          <div><strong>Kondisi: </strong> <span id="product-condition"></span></div>
+          <div><strong>Min. Pemesanan: </strong> <span id="product-min-order"></span></div>
+          <div><strong>Etalase: </strong> <span id="product-etalase"></span></div>
+          <div><strong>Deskripsi: </strong><span id="product-deskripsi"></span></div>
         </div>
         <div class="description" id="product-description"></div>
         <div class="purchase-section">
@@ -209,44 +209,16 @@
   </div>
   
   <script>
-    const products = [
-      {
-        id: 1,
-        name: "ROG phone 8 pro, 24GB, 1TB",
-        category: "electronics",
-        price: 13899000,
-        image: "ROG.png",
-        images: ["ROG.png"],
-        sold: 250,
-        rating: 5,
-        ratingCount: 21,
-        condition: "Baru",
-        minOrder: "1 Buah",
-        etalase: "Semua Etalase",
-        description: "",
-        stock: 731
-      },
-      {
-        id: 2,
-        name: "Laptop",
-        category: "electronics",
-        price: 20000000,
-        image: "Laptop2.jpg",
-        images: ["Laptop2.jpg"],
-        sold: 100,
-        rating: 4.5,
-        ratingCount: 10,
-        condition: "Baru",
-        minOrder: "1 Buah",
-        etalase: "Elektronik",
-        description: "",
-        stock: 50
-      },
-      
-    ];
-
-    function getProductById(id) {
-      return products.find(p => p.id === id);
+    async function getProductById(id) {
+      const user_id = getCookie('userid')
+      try {
+        const response = await fetch(`http://localhost:8080/product?id=${encodeURIComponent(id)}`);
+        const data = await response.json();
+        return data;
+      } catch (error) {
+        console.error('Error:', error);
+        // Tampilkan error ke user jika perlu
+      }
     }
 
     function formatPrice(price) {
@@ -276,17 +248,18 @@
     }
 
     function renderProductDetails(product) {
+      document.getElementById("saldo-user").textContent = 'Rp ' + getCookie('saldo').toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
       document.getElementById("product-name").textContent = product.name;
-      document.getElementById("product-price").textContent = "Rp " + formatPrice(product.price);
-      document.getElementById("product-sold").textContent = "Terjual " + product.sold + "+";
-      document.getElementById("product-rating").textContent = "⭐ " + product.rating + " (" + product.ratingCount + " rating)";
-      document.getElementById("product-condition").textContent = product.condition;
-      document.getElementById("product-min-order").textContent = product.minOrder;
-      document.getElementById("product-etalase").textContent = product.etalase;
-      document.getElementById("product-description").textContent = product.description;
+      document.getElementById("product-price").textContent = "Rp " + formatPrice(parseInt(product.price));
+      // document.getElementById("product-sold").textContent = "Terjual " + product.sold + "+";
+      // document.getElementById("product-rating").textContent = "⭐ " + product.rating + " (" + product.ratingCount + " rating)";
+      // document.getElementById("product-condition").textContent = product.condition;
+      // document.getElementById("product-min-order").textContent = product.minOrder;
+      // document.getElementById("product-etalase").textContent = product.etalase;
+      document.getElementById("product-deskripsi").textContent = product.description;
       document.getElementById("product-stock").textContent = product.stock;
       updateMainImage(product.image);
-      renderThumbnails(product.images);
+      // renderThumbnails(product.images);
       updateSubtotal(1, product.price);
     }
 
@@ -318,34 +291,24 @@
 }
 
 async function addToCart(product, qty) {
+  const userId = getCookie("userid")
   try {
     // Panggil API untuk simpan ke server
     const response = await fetch("http://localhost:8080/addcart", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
-        // Tambahkan Authorization jika perlu
-        // "Authorization": "Bearer yourToken"
       },
       body: JSON.stringify({
-        ...product,
-        quantity: qty
+        user_id: parseInt(userId),
+        product_id: product.id,
+        qty: qty
       })
     });
 
     if (!response.ok) {
       throw new Error("Gagal menambahkan ke keranjang di server.");
     }
-
-    // Optional: Update localStorage sebagai cadangan (offline mode atau cache)
-    let cart = JSON.parse(localStorage.getItem("cartItems")) || [];
-    const existingIndex = cart.findIndex(item => item.id === product.id);
-    if (existingIndex !== -1) {
-      cart[existingIndex].quantity += qty;
-    } else {
-      cart.push({ ...product, quantity: qty });
-    }
-    localStorage.setItem("cartItems", JSON.stringify(cart));
 
     updateCartCount();
     alert("Produk berhasil ditambahkan ke keranjang!");
@@ -364,6 +327,7 @@ document.querySelector(".btn-add-cart").addEventListener("click", () => {
     return;
   }
 
+  console.log(currentProduct.id)
   addToCart(currentProduct, qty);
 });
 
@@ -411,14 +375,18 @@ document.querySelector(".btn-add-cart").addEventListener("click", () => {
 
     let currentProduct = null;
 
-    window.addEventListener("load", () => {
+    window.addEventListener("load", async () => {
+      const currentUser = getCookie("userid");
+      if (!currentUser) {
+        window.location.href = "login.html";
+      }
       const id = parseInt(getQueryParam("id"));
       if (!id) {
         alert("Product ID not specified.");
         window.location.href = "home.html";
         return;
       }
-      currentProduct = getProductById(id);
+      currentProduct = await getProductById(id);
       if (!currentProduct) {
         alert("Product not found.");
         window.location.href = "home.html";
@@ -433,6 +401,11 @@ document.querySelector(".btn-add-cart").addEventListener("click", () => {
       const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
       return match ? match[2] : null;
     }
+
+    document.getElementById("logout-btn").addEventListener("click", () => {
+      document.cookie = "userid=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT";
+      window.location.href = "login.html";
+    });
   </script>
 </body>
 </html>

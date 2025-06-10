@@ -16,6 +16,7 @@ func Router(r *gin.Engine) {
 	r.POST("/login", Controllers.LoginHandler)
 
 	// Product
+	r.GET("/product", Controllers.GetProductIDHandler)
 	r.POST("/products", Controllers.GetProductsByTagHandler)
 	r.GET("/products", Controllers.GetAllProductsHandler)
 	r.POST("/recommend", Controllers.GetRecommendation)
